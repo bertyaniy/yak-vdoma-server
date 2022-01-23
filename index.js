@@ -1,8 +1,8 @@
 'use strict'
 
-const { server } = require('./utils/setup');
+const { server } = require('./src/utils/setup');
 
-const { App } = require('./classes/App');
+const { App } = require('./src/classes/App');
 
 // Application starting function
 (function main() {
