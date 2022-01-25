@@ -1,6 +1,7 @@
 'use stict'
 
 const sequelize = require('../db');
+const models = require("../models/models");
 
 // Main application class
 class App {
