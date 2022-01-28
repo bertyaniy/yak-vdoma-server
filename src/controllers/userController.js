@@ -12,11 +12,11 @@ class userController {
 
     async authCheck(req, res, next) {
         const {id} = req.query;
+
         if (!id) {
-            return next(ApiError.fordidden('Aboba')); // Test
+            return next(ApiError.notFound("Test")); // Test
         }
-        res.json(id);
+        res.json(id);   
     }
 }
-
 module.exports = new userController();
