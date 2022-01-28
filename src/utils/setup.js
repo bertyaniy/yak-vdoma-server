@@ -9,10 +9,12 @@ const express = require('express');
 const server = express();
 
 const router = require('../routers/index');
+const errorHandler = require('../middlewares/errorHandlingMiddleware');
 
 server.use(cors());
 server.use(express.json());
 server.use('/api', router);
+server.use(errorHandler); // Error handler must be last
 
 // server.get('/', (req, res) => {
 //     res.status(200).json("Test");
