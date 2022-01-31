@@ -3,6 +3,7 @@
 // Setup dotenv
 const dotenv = require('dotenv').config();
 const cors = require('cors');
+const fileUpload = require('express-fileupload');
 
 // Import express
 const express = require('express');
@@ -14,6 +15,7 @@ const errorHandler = require('../middlewares/errorHandlingMiddleware');
 server.use(cors());
 server.use(express.json());
 server.use('/api', router);
+server.use(fileUpload({}));
 server.use(errorHandler); // Error handler must be last
 
 // server.get('/', (req, res) => {

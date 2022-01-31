@@ -19,7 +19,7 @@ class App {
 
         try {
             this.server.listen(port || 3000, () => {
-                console.log(`Server had started on port ${port}`);
+                console.log(`========== Server had started on port ${port} ==========`);
             });
 
         } catch(e) {
@@ -32,7 +32,7 @@ class App {
         try {
             await sequelize.authenticate();
             await sequelize.sync();
-            console.log(`Database had connected`);
+            console.log(`========== Database had connected ==========`);
         } catch (e) {
             console.log(e);
         }

@@ -1,14 +1,28 @@
+const { Type } = require('../models/models');
+const ApiError = require('../classes/ApiError');
+
+
 class typeController {
     
-    async createType(req, res) {
+    async create(req, res) {
+        const { name } = req.body;
+        const type = await Type.create({name});
+        return res.json(type);
 
     }
 
-    async getTypes(req, res) {
+    async getAll(req, res) {
+        const types = await Type.findAll();
+        return res.json(types);
 
     }
 
-    async deleteType(req, res) {
+    async delete(req, res) {
+        const name = req.body;
+        const del = await Type.destroy({
+            where: name
+        });
+        return res.json(del);
 
     }
 }
