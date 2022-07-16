@@ -23,7 +23,7 @@ Dish.init({
         allowNull: true,
     },
     price: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.FLOAT,
         allowNull: false,
         defaultValue: 0,
     },
@@ -51,9 +51,9 @@ Dish.init({
     },
 }, {
     tableName: 'dishes',
-    paranoid: true,
+    paranoid: false,
     deletedAt: 'disabledAt',
     sequelize
 });
 
-module.exports = { Dish };
+module.exports = { Dish } ;
