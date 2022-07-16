@@ -1,4 +1,5 @@
 const { Dish } = require('./model');
+const { Category } = require('../../categories/classes/model');
 
 // Data Access Layer for Dishes
 class DishesDal {
@@ -9,7 +10,9 @@ class DishesDal {
      */
     static async getById(id) {
         return Dish.findByPk(id, {
-            raw: true
+            raw: true,
+            nest: true,
+            include: Category
         });
     }
 
@@ -23,8 +26,10 @@ class DishesDal {
     static async getAll(limit, offset, filters = {}) {
         return Dish.findAndCountAll({
             where: filters,
+            include: Category,
             offset,
             limit,
+            nest: true,
             raw: true
         });
     }
