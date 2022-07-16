@@ -1,6 +1,7 @@
 const { DishesDal } = require('./dal');
 const { NotFoundError, DatabaseError } = require('../../../utils/errors');
 const { HttpCodes } = require('../../../utils/http-codes');
+const { Category } = require('../../categories');
 
 // Handles routes logic
 class DishesController {
@@ -46,6 +47,18 @@ class DishesController {
      */
     static async create(req, res) {
         const data = req.body;
+        const categoryId = data.categoryId;
+
+        const category = Boolean(categoryId)
+            ? await Category.findOne({
+                id: categoryId,
+            })
+            : null;
+
+        // If dish category specified, but no category was found
+        if (Boolean(categoryId) && !category) {
+            throw new NotFoundError('Category doesn\'t exists');
+        }
 
         try {
             const createdDish = await DishesDal.create(data);

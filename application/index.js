@@ -3,7 +3,7 @@ const appStartedAt = process.hrtime();
 
 // Setup dotenv
 const path = require('path');
-const dotenv = require('dotenv').config({
+require('dotenv').config({
     path: path.join(__dirname, '../.env')
 });
 
@@ -27,8 +27,6 @@ const app = express();
 // Import routers
 const { CategoriesRouter } = require('./essences/categories');
 const { DishesRouter } = require('./essences/dishes');
-const { UsersRouter } = require('./essences/users');
-const { RolesRouter } = require('./essences/roles');
 
 (async function bootstrap() {
     // Establish database connection
@@ -66,8 +64,6 @@ const { RolesRouter } = require('./essences/roles');
     // Register routers
     app.use('/categories', new RouterProxy(CategoriesRouter));
     app.use('/dishes', new RouterProxy(DishesRouter));
-    app.use('/users', new RouterProxy(UsersRouter));
-    app.use('/roles', new RouterProxy(RolesRouter));
 
     // Healthcheck
     app.get('/ping', (req, res) => {
@@ -97,6 +93,8 @@ const { RolesRouter } = require('./essences/roles');
             .gap();
 
         res.status(code).json(response);
+
+        next();
     });
 
     app.listen(process.env.APP_PORT, () => {

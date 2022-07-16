@@ -1,6 +1,5 @@
 const { sequelize } = require('../../../utils/sequelize');
 const { DataTypes, Model } = require("sequelize");
-const { Dish } = require('../../dishes/classes/model');
 
 class Category extends Model { }
 
@@ -30,19 +29,9 @@ Category.init({
     },
 }, {
     tableName: 'categories',
-    paranoid: false,
+    paranoid: true,
     deletedAt: 'disabledAt',
     sequelize
 });
-
-
-Category.associate = (models) => {
-    Category.hasMany(Dish); 
-}
-
-Dish.associate = (models) => {
-    Dish.belongsTo(Category);   
-}
-
 
 module.exports =  { Category }; 

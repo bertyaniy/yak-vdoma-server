@@ -1,5 +1,6 @@
 const { sequelize } = require('../../../utils/sequelize');
 const { DataTypes, Model } = require("sequelize");
+const { Category } = require('../../categories/classes/model');
 
 /**
  * Filename of default dish picture in storage
@@ -27,11 +28,6 @@ Dish.init({
         allowNull: false,
         defaultValue: 0,
     },
-    rating: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 0,
-    },
     picture: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -49,11 +45,18 @@ Dish.init({
         type: DataTypes.DATE,
         allowNull: true,
     },
+    categoryId: {
+        type: DataTypes.UUID,
+        allowNull: true,
+    }
 }, {
     tableName: 'dishes',
-    paranoid: false,
+    paranoid: true,
     deletedAt: 'disabledAt',
     sequelize
 });
+
+Category.hasMany(Dish, { foreignKey: 'categoryId' });
+Dish.belongsTo(Category, { foreignKey: 'categoryId' });
 
 module.exports = { Dish } ;

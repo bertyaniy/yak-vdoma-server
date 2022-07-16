@@ -13,7 +13,7 @@ const [database, username, password, host, port, dialect] = [
 // Create sequelize instance with specified options
 const sequelize = new Sequelize(database, username, password, {
     host, port, dialect,
-    logging: () => {}
+    logging: (sql) => console.log(sql + '\n')
 });
 
 module.exports = { sequelize };
