@@ -23,10 +23,14 @@ const { sequelize } = require('./utils/sequelize');
 // Import express
 const express = require('express');
 const app = express();
+const http = require('request');
 
 // Import routers
 const { CategoriesRouter } = require('./essences/categories');
 const { DishesRouter } = require('./essences/dishes');
+
+const { MainPageRouter } = require('./pages/main');
+const { OrderRouter } = require('./pages/form');
 
 (async function bootstrap() {
     // Establish database connection
@@ -61,13 +65,33 @@ const { DishesRouter } = require('./essences/dishes');
         next();
     });
 
+    app.use('/static', express.static(path.resolve('../rogorc/static')));
+
     // Register routers
     app.use('/categories', new RouterProxy(CategoriesRouter));
     app.use('/dishes', new RouterProxy(DishesRouter));
 
+    app.use(new RouterProxy(MainPageRouter));
+    app.use(new RouterProxy(OrderRouter));
+
     // Healthcheck
     app.get('/ping', (req, res) => {
         res.status(200).end('Pong');
+    });
+
+    app.post('/request', (req, res) => {
+
+        const data = req.body;
+    
+        console.log(data);
+        
+        let msg = `
+        <b>Имя: </b> ${data.name}\n\n<b>Тип заказа: </b> ${data.select}\n\n<b>Телефон: </b> ${data.phone}\n\n<b>Сообщение: </b> ${data.comment}\n\n<b>Адрес: </b> ${data.adress}`
+    
+        msg = encodeURI(msg);
+        const url = `https://api.telegram.org/bot${process.env.TG_TOKEN}/sendMessage?chat_id=${process.env.TG_CHAT_ID}&parse_mode=html&text=${msg}`
+    
+        http.post(url);
     });
 
     // Register error handler
