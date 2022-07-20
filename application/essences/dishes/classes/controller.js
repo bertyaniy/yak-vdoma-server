@@ -1,7 +1,12 @@
 const { DishesDal } = require('./dal');
-const { NotFoundError, DatabaseError } = require('../../../utils/errors');
+const { NotFoundError, DatabaseError, UnauthorizedError } = require('../../../utils/errors');
 const { HttpCodes } = require('../../../utils/http-codes');
 const { Category } = require('../../categories');
+
+const path = require('path');
+require('dotenv').config({
+    path: path.join(__dirname, '../../.env')
+});
 
 // Handles routes logic
 class DishesController {
@@ -47,6 +52,11 @@ class DishesController {
      */
     static async create(req, res) {
         const data = req.body;
+
+        if (!data.secret || data.secret != process.env.SECRET) {
+            throw new UnauthorizedError('Secret key error');
+        }
+
         const categoryId = data.categoryId;
 
         const category = Boolean(categoryId)
@@ -79,6 +89,11 @@ class DishesController {
      */
     static async update(req, res) {
         const data = req.body;
+
+        if (!data.secret || data.secret != process.env.SECRET) {
+            throw new UnauthorizedError('Secret key error');
+        }
+
         const { dishId } = req.params;
         const dish = await DishesDal.getById(dishId);
 
@@ -104,6 +119,12 @@ class DishesController {
      * @returns number
      */
     static async delete(req, res) {
+        const data = req.body;
+        
+        if (!data.secret || data.secret != process.env.SECRET) {
+            throw new UnauthorizedError('Secret key error');
+        }
+
         const { dishId } = req.params;
         const dish = await DishesDal.getById(dishId);
 

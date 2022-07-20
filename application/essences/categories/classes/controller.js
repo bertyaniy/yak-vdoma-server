@@ -1,9 +1,15 @@
 const { CategoriesDal } = require('./dal');
-const { NotFoundError, DatabaseError } = require('../../../utils/errors');
+const { NotFoundError, DatabaseError, UnauthorizedError } = require('../../../utils/errors');
 const { HttpCodes } = require('../../../utils/http-codes');
+
+const path = require('path');
+require('dotenv').config({
+    path: path.join(__dirname, '../../.env')
+});
 
 // Handles routes logic
 class CategoriesController {
+
     /**
      * @method GET
      * @payload categoryId: string
@@ -11,6 +17,7 @@ class CategoriesController {
      * @returns Category
      */
     static async getById(req, res) {
+
         const { categoryId } = req.params;
         const category = await CategoriesDal.getById(categoryId);
 
@@ -30,6 +37,7 @@ class CategoriesController {
      * @returns Category[]
      */
     static async getAll(req, res) {
+
         const { limit, offset } = req.query;
         const categories = await CategoriesDal.getAll(limit, offset);
 
@@ -46,6 +54,10 @@ class CategoriesController {
      */
     static async create(req, res) {
         const data = req.body;
+
+        if (!data.secret || data.secret != process.env.SECRET) {
+            throw new UnauthorizedError('Secret key error');
+        }
 
         try {
             const createdCategory = await CategoriesDal.create(data);
@@ -66,6 +78,11 @@ class CategoriesController {
      */
     static async update(req, res) {
         const data = req.body;
+
+        if (!data.secret || data.secret != process.env.SECRET) {
+            throw new UnauthorizedError('Secret key error');
+        }
+
         const { categoryId } = req.params;
         const category = await CategoriesDal.getById(categoryId);
 
@@ -91,6 +108,12 @@ class CategoriesController {
      * @returns number
      */
     static async delete(req, res) {
+
+        const data = req.body;
+        if (!data.secret || data.secret != process.env.SECRET) {
+            throw new UnauthorizedError('Secret key error');
+        }
+
         const { categoryId } = req.params;
         const category = await CategoriesDal.getById(categoryId);
 
