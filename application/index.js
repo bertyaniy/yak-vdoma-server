@@ -59,7 +59,7 @@ const { OrderRouter } = require('./pages/form');
             const message =
                 `Request ${req.method} ${req.originalUrl} finished in ${requestDuration}ms`
 
-            logger.info(message);
+            // logger.info(message);
         });
 
         next();
@@ -82,16 +82,28 @@ const { OrderRouter } = require('./pages/form');
     app.post('/request', (req, res) => {
 
         const data = req.body;
-    
-        console.log(data);
+
+        let final = []
+        function fin() {
+            let order = data.order;
+            for (let i = 0; i < order.length; i++) {
+                let chain = ` ${order[i].name}  ===  ${order[i].value} `;
+                final.push(chain);
+            }
+                return final;
+        }
         
         let msg = `
-        <b>Имя: </b> ${data.name}\n\n<b>Тип заказа: </b> ${data.select}\n\n<b>Телефон: </b> ${data.phone}\n\n<b>Сообщение: </b> ${data.comment}\n\n<b>Адрес: </b> ${data.adress}`
-    
+        <b>Имя: </b> ${data.name}\n\n<b>Тип заказа: </b> ${data.select}\n\n<b>Телефон: </b> ${data.number}\n\n<b>Адрес: </b> ${data.adress}\n\n<b>Заказ: </b> <code>${fin()}</code>`
+        
         msg = encodeURI(msg);
         const url = `https://api.telegram.org/bot${process.env.TG_TOKEN}/sendMessage?chat_id=${process.env.TG_CHAT_ID}&parse_mode=html&text=${msg}`
-    
-        http.post(url);
+
+        try {
+            http.post(url);
+        } catch(e) {
+            console.log("ERROR");
+        }
     });
 
     // Register error handler
@@ -121,8 +133,12 @@ const { OrderRouter } = require('./pages/form');
         next();
     });
 
-    app.listen(process.env.APP_PORT, () => {
+    app.listen(process.env.APP_PORT, "0.0.0.0", () => {
         const startDuration = Stopwatch.getDuration(appStartedAt);
+        setInterval(proc, 1000);
+        function proc() {
+            console.log("MemUsed: " + Math.round(process.memoryUsage().rss / (1024 * 1024)) + "MB");
+          }
 
         logger
             .info(`The application has been started. It takes ${startDuration}ms`)

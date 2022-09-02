@@ -4,7 +4,7 @@ class Logger {
     constructor(name) {
         this.name = name;
     }
-
+    
     info(message) {
         const resultMessage = this.buildMessage(message);
         console.log(chalk.cyan(resultMessage));
